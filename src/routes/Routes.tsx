@@ -15,7 +15,7 @@ const Routes: React.FC<Props> = () => {
     <Switch>
       <Route exact path="/" component={Index} />
       <Route exact path="/products" component={Products} />
-      <Route exact path="/products/:id" component={ProductDetail} />
+      <Route exact path="/products/:productId" component={ProductDetail} />
       <Route path="/buy" component={BuyRoutes} />
       <Route path="/orders" component={OrderRoutes} />
       <Route path="/admin" component={AdminRoutes} />
