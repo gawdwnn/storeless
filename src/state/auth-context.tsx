@@ -2,6 +2,7 @@ import React, { createContext, Dispatch, useReducer, useContext, useEffect } fro
 
 import { AuthUser, UserInfo } from '../types';
 import { auth } from '../firebase/config';
+import { snapshotToDoc, usersRef } from '../firebase';
 
 interface Props {}
 
@@ -85,6 +86,23 @@ const AuthContextProvider: React.FC<Props> = ({ children }) => {
 
     return () => unsubscribe();
   }, []);
+
+  // Listen to user document changed in firestore
+  useEffect(() => {
+    if (!authState.authUser) return authDispatch(fetchUserInfo(null))
+
+    const unsubscribe = usersRef.doc(authState.authUser.uid).onSnapshot({
+      next: (doc) => {
+        if (!doc.exists) return authDispatch(fetchUserInfo(null))
+
+        const userInfo = snapshotToDoc<UserInfo>(doc)
+        authDispatch(fetchUserInfo(userInfo))
+      },
+      error: () => authDispatch(fetchUserInfo(null)),
+    })
+
+    return () => unsubscribe()
+  }, [authState.authUser])
 
   return (
     <AuthStateContext.Provider value={authState}>

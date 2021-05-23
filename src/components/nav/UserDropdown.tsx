@@ -9,7 +9,7 @@ interface Props {}
 
 const Sidebar: React.FC<Props> = () => {
   const {
-    authState: { authUser, userInfo },
+    authState: { authUser },
     authDispatch,
   } = useAuthContext()
   const { signout } = useAuthenticate();
