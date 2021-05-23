@@ -4,15 +4,18 @@ import './App.css';
 import './fontawesome';
 import Layout from './Layout';
 import Routes from './routes/Routes';
+import ModalContextProvider from './state/modal-context';
 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Layout>
-          <Routes />
-        </Layout>
-      </BrowserRouter>
+      <ModalContextProvider>
+        <BrowserRouter>
+          <Layout>
+            <Routes />
+          </Layout>
+        </BrowserRouter>
+      </ModalContextProvider>
     </div>
   );
 }

@@ -1,9 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useModalContext } from '../../state/modal-context';
+import Button from '../Button';
 
 interface Props {}
 
 const Navbar: React.FC<Props> = () => {
+  const { setModalType } = useModalContext();
+
   return (
     <div className="head">
       <div className="head__section">
@@ -12,10 +16,27 @@ const Navbar: React.FC<Props> = () => {
             <h2 className="header header--logo">Storeless</h2>
           </NavLink>
         </div>
-        <NavLink to="/" className="list-link">
-          Home
-        </NavLink>
-        <NavLink to="/products" className="list-link">
+
+        <div className="head__search">
+          <div className="search-input">
+            <input type="text" className="search" placeholder="Search" />
+          </div>
+          <Button>Search</Button>
+        </div>
+
+        <div className="head__navbar">
+          <ul className="navbar">
+            <div className="navbar__lists"></div>
+            <div className="navbar__profile">
+              <Button className="btn--sign">Sign in</Button>
+              <Button className="btn--sign" onClick={() => setModalType('signup')}>
+                Sign up
+              </Button>
+            </div>
+          </ul>
+        </div>
+
+        {/* <NavLink to="/products" className="list-link">
           Products
         </NavLink>
         <NavLink to="/buy/my-cart" className="list-link">
@@ -38,7 +59,7 @@ const Navbar: React.FC<Props> = () => {
         </NavLink>
         <NavLink to="/admin/manage-users" className="list-link">
           Manage Users
-        </NavLink>
+        </NavLink> */}
       </div>
     </div>
   );
