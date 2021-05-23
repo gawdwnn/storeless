@@ -5,6 +5,7 @@ import Button from '../Button';
 import Input from '../Input';
 import { useAuthenticate } from '../../hooks/useAuthenticate';
 import { useModalContext } from '../../state/modal-context';
+import { SignupData } from '../../types';
 
 interface Props {}
 
@@ -12,11 +13,8 @@ const Signup: React.FC<Props> = () => {
   const { signup, loading, error } = useAuthenticate();
   const { setModalType } = useModalContext();
 
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-  } = useForm<{ username: string; email: string; password: string }>();
+  const { register, formState, handleSubmit } = useForm<SignupData>();
+  const { errors } = formState;
 
   const handleSignup = handleSubmit(async (data) => {
     const response = await signup(data);
@@ -95,7 +93,7 @@ const Signup: React.FC<Props> = () => {
           Already have an account?{' '}
           <span
             className="paragraph--orange paragraph--link"
-            // onClick={() => setModalType('signin')}
+            onClick={() => setModalType('signin')}
           >
             sign in
           </span>{' '}

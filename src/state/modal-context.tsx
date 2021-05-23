@@ -7,6 +7,8 @@ import React, {
   useEffect,
   useContext,
 } from 'react';
+import ResetPassword from '../components/auth/ResetPassword';
+import Signin from '../components/auth/Signin';
 import Signup from '../components/auth/Signup';
 
 interface Props {}
@@ -27,8 +29,8 @@ const ModalContext = createContext<ModalState | undefined>(undefined);
 const modals: Modals = {
   close: null,
   signup: <Signup />,
-  signin: null,
-  reset_password: null,
+  signin: <Signin />,
+  reset_password: <ResetPassword />,
 };
 
 const ModalContextProvider: React.FC<Props> = ({ children }) => {

@@ -1,16 +1,20 @@
 import React, { createContext, Dispatch, useReducer, useContext, useEffect } from 'react';
 
-import { AuthUser } from '../types';
+import { AuthUser, UserInfo } from '../types';
 import { auth } from '../firebase/config';
 
 interface Props {}
 
 type FETCH_AUTH_USER = { type: 'FETCH_AUTH_USER'; payload: AuthUser | null };
+type OPEN_USER_DROPDOWN = { type: 'OPEN_USER_DROPDOWN'; payload: boolean };
+type FETCH_USER_INFO = { type: 'FETCH_USER_INFO'; payload: UserInfo | null };
 
-type AuthActions = FETCH_AUTH_USER;
+type AuthActions = FETCH_AUTH_USER | OPEN_USER_DROPDOWN | FETCH_USER_INFO;
 
 type AuthState = {
   authUser: AuthUser | null;
+  isUserDropdownOpen: boolean;
+  userInfo: UserInfo | null;
 };
 
 type AuthDispatch = Dispatch<AuthActions>;
@@ -24,6 +28,16 @@ export const fetchAuthUser = (user: AuthUser | null): FETCH_AUTH_USER => ({
   payload: user,
 });
 
+export const openUserDropdown = (open: boolean): OPEN_USER_DROPDOWN => ({
+  type: 'OPEN_USER_DROPDOWN',
+  payload: open,
+});
+
+export const fetchUserInfo = (userInfo: UserInfo | null): FETCH_USER_INFO => ({
+  type: 'FETCH_USER_INFO',
+  payload: userInfo,
+});
+
 // Reducer function
 const authReducer = (state: AuthState, action: AuthActions): AuthState => {
   switch (action.type) {
@@ -33,6 +47,18 @@ const authReducer = (state: AuthState, action: AuthActions): AuthState => {
         authUser: action.payload,
       };
 
+    case 'OPEN_USER_DROPDOWN':
+      return {
+        ...state,
+        isUserDropdownOpen: action.payload,
+      };
+
+    case 'FETCH_USER_INFO':
+      return {
+        ...state,
+        userInfo: action.payload,
+      };
+
     default:
       return state;
   }
@@ -40,6 +66,8 @@ const authReducer = (state: AuthState, action: AuthActions): AuthState => {
 
 const initialState: AuthState = {
   authUser: null,
+  isUserDropdownOpen: false,
+  userInfo: null,
 };
 
 const AuthContextProvider: React.FC<Props> = ({ children }) => {

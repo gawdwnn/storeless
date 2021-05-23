@@ -1,9 +1,13 @@
 import { useAsyncCall } from './useAsyncCall';
 import { SignupData } from '../types';
 import { auth, functions } from '../firebase/config';
+import { openUserDropdown, useAuthContext } from '../state/auth-context';
 
 export const useAuthenticate = () => {
-  const { loading, setLoading, error, setError, successMsg, setSuccessMsg } = useAsyncCall();
+  const { authState, authDispatch } = useAuthContext();
+  const { isUserDropdownOpen } = authState;
+  const { loading, setLoading, error, setError, successMsg, setSuccessMsg } =
+    useAsyncCall();
 
   const signup = async (data: SignupData) => {
     const { username, email, password } = data;
@@ -40,9 +44,64 @@ export const useAuthenticate = () => {
     }
   };
 
+  const signout = () => {
+    auth
+      .signOut()
+      .then(() => {
+        if (isUserDropdownOpen) authDispatch(openUserDropdown(false));
+      })
+      .catch((err) => alert('Soryy, something went wrong.'));
+  };
+
+  const signin = async (data: Omit<SignupData, 'username'>) => {
+    const { email, password } = data;
+
+    try {
+      setLoading(true);
+
+      const response = await auth.signInWithEmailAndPassword(email, password);
+
+      if (!response) {
+        setError('Sorry, something went wrong.');
+        setLoading(false);
+        return;
+      }
+
+      setLoading(false);
+
+      return response;
+    } catch (err) {
+      const { message } = err as { message: string };
+
+      setError(message);
+      setLoading(false);
+    }
+  };
+
+  const resetPassword = (data: Omit<SignupData, 'username' | 'password'>) => {
+    setLoading(true);
+
+    auth
+      .sendPasswordResetEmail(data.email)
+      .then(() => {
+        setSuccessMsg('Please check your email to reset your password.');
+        setLoading(false);
+      })
+      .catch((err) => {
+        const { message } = err as { message: string };
+
+        setError(message);
+        setLoading(false);
+      });
+  };
+
   return {
     signup,
+    signin,
+    signout,
+    resetPassword,
     loading,
     error,
+    successMsg,
   };
 };
