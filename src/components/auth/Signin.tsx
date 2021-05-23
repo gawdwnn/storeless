@@ -7,12 +7,13 @@ import Input from '../Input';
 import { useModalContext } from '../../state/modal-context';
 import { useAuthenticate } from '../../hooks/useAuthenticate';
 import { SignupData } from '../../types';
+import SocialMediaLogin from './SocialMediaLogin';
 
 interface Props {}
 
 const Signin: React.FC<Props> = () => {
   const { setModalType } = useModalContext();
-  const { signin, loading, error } = useAuthenticate();
+  const { signin, loading, error, socialLogin } = useAuthenticate();
   const { register, formState, handleSubmit } = useForm<Omit<SignupData, 'username'>>();
   const { errors } = formState;
 
@@ -39,7 +40,7 @@ const Signin: React.FC<Props> = () => {
 
         <h3 className="header--center paragraph--orange">Sign in to Storeless</h3>
 
-        {/* <SocialMediaLogin socialLogin={socialLogin} loading={loading} /> */}
+        <SocialMediaLogin socialLogin={socialLogin} loading={loading} />
 
         <hr></hr>
         <p className="paragraph--center paragraph--focus paragraph--small">

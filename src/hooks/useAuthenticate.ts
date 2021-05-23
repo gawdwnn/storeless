@@ -1,6 +1,6 @@
 import { useAsyncCall } from './useAsyncCall';
-import { SignupData } from '../types';
-import { auth, functions } from '../firebase/config';
+import { Provider, SignupData } from '../types';
+import { auth, functions, firebase } from '../firebase/config';
 import { openUserDropdown, useAuthContext } from '../state/auth-context';
 
 export const useAuthenticate = () => {
@@ -95,11 +95,49 @@ export const useAuthenticate = () => {
       });
   };
 
+  const socialLogin = async (provider: Provider) => {
+    try {
+      setLoading(true);
+
+      const providerObj =
+        provider === 'facebook'
+          ? new firebase.auth.FacebookAuthProvider()
+          : provider === 'google'
+          ? new firebase.auth.GoogleAuthProvider()
+          : null;
+
+      if (!providerObj) return;
+
+      const response = await auth.signInWithPopup(providerObj);
+
+      if (!response) {
+        setError('Sorry, something went wrong.');
+        setLoading(false);
+        return;
+      }
+
+      // Call onSignup functions to create a new user in firestore
+      const onSignup = functions.httpsCallable('onSignup');
+
+      const data = await onSignup({ username: response.user?.displayName });
+
+      setLoading(false);
+
+      return data;
+    } catch (err) {
+      const { message } = err as { message: string };
+
+      setError(message);
+      setLoading(false);
+    }
+  };
+
   return {
     signup,
     signin,
     signout,
     resetPassword,
+    socialLogin,
     loading,
     error,
     successMsg,

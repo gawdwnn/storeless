@@ -8,7 +8,10 @@ export type SignupData = {
   password: string;
 };
 
+export type Provider = 'facebook' | 'google'
+
 export type Role = 'SUPER_ADMIN' | 'CLIENT' | 'ADMIN';
+
 export type Address = {
   index?: number;
   fullname: string;

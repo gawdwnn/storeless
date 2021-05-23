@@ -6,11 +6,12 @@ import Input from '../Input';
 import { useAuthenticate } from '../../hooks/useAuthenticate';
 import { useModalContext } from '../../state/modal-context';
 import { SignupData } from '../../types';
+import SocialMediaLogin from './SocialMediaLogin';
 
 interface Props {}
 
 const Signup: React.FC<Props> = () => {
-  const { signup, loading, error } = useAuthenticate();
+  const { signup, loading, error, socialLogin } = useAuthenticate();
   const { setModalType } = useModalContext();
 
   const { register, formState, handleSubmit } = useForm<SignupData>();
@@ -32,7 +33,7 @@ const Signup: React.FC<Props> = () => {
 
         <h3 className="header--center paragraph--orange">Sign up to Storeless</h3>
 
-        {/* <SocialMediaLogin socialLogin={socialLogin} loading={loading} /> */}
+        <SocialMediaLogin socialLogin={socialLogin} loading={loading} />
 
         <form className="form" onSubmit={handleSignup}>
           <Input
