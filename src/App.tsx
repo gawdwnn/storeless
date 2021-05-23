@@ -4,11 +4,12 @@ import './App.css';
 import './fontawesome';
 import Layout from './Layout';
 import Routes from './routes/Routes';
+import AuthContextProvider from './state/auth-context';
 import ModalContextProvider from './state/modal-context';
 
 function App() {
   return (
-    <div className="App">
+    <AuthContextProvider>
       <ModalContextProvider>
         <BrowserRouter>
           <Layout>
@@ -16,7 +17,7 @@ function App() {
           </Layout>
         </BrowserRouter>
       </ModalContextProvider>
-    </div>
+    </AuthContextProvider>
   );
 }
 
