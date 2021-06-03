@@ -1,17 +1,29 @@
 import React from 'react';
-import { Route, Switch } from 'react-router';
+import { Redirect, Route, Switch } from 'react-router';
 import OrderDetail from '../pages/OrderDetail';
 import Orders from '../pages/Orders';
 import PageNotFound from '../pages/PageNotFound';
+import { UserInfo } from '../types';
+import { isClient } from '../helpers';
 
 interface Props {}
 
-const OrderRoutes: React.FC<Props> = () => {
+const OrderRoutes: React.FC<Props> = (props) => {
+  const { userInfo } = props as { userInfo: UserInfo };
+
+  if (!isClient(userInfo.role)) return <Redirect to="/" />;
+
   return (
     <Switch>
-      <Route exact path="/orders/my-orders" component={Orders} />
-      <Route exact path="/orders/my-orders/:id" component={OrderDetail} />
-      <Route exact path="*" component={PageNotFound} />
+      <Route path="/orders/my-orders/:id">
+        <OrderDetail />
+      </Route>
+      <Route path="/orders/my-orders">
+        <Orders />
+      </Route>
+      <Route path="*">
+        <PageNotFound />
+      </Route>
     </Switch>
   );
 };

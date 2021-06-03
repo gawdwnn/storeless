@@ -7,19 +7,40 @@ import Products from '../pages/Products';
 import AdminRoutes from './AdminRoutes';
 import BuyRoutes from './BuyRoutes';
 import OrderRoutes from './OrderRoutes';
+import PrivateRoute from './PrivateRoute';
 
 interface Props {}
 
 const Routes: React.FC<Props> = () => {
   return (
     <Switch>
-      <Route exact path="/" component={Index} />
-      <Route exact path="/products" component={Products} />
-      <Route exact path="/products/:productId" component={ProductDetail} />
-      <Route path="/buy" component={BuyRoutes} />
-      <Route path="/orders" component={OrderRoutes} />
-      <Route path="/admin" component={AdminRoutes} />
-      <Route path="*" component={PageNotFound} />
+      <Route path='/buy'>
+        <PrivateRoute>
+          <BuyRoutes />
+        </PrivateRoute>
+      </Route>
+      <Route path='/orders'>
+        <PrivateRoute>
+          <OrderRoutes />
+        </PrivateRoute>
+      </Route>
+      <Route path='/admin'>
+        <PrivateRoute>
+          <AdminRoutes />
+        </PrivateRoute>
+      </Route>
+      <Route path='/products/:productId'>
+        <ProductDetail />
+      </Route>
+      <Route path='/products'>
+        <Products />
+      </Route>
+      <Route path='/'>
+        <Index />
+      </Route>
+      <Route path='*'>
+        <PageNotFound />
+      </Route>
     </Switch>
   );
 };

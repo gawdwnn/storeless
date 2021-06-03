@@ -1,21 +1,37 @@
 import React from 'react';
-import { Route, Switch } from 'react-router';
+import { Redirect, Route, Switch } from 'react-router';
+import { isAdmin } from '../helpers';
 import ManageOrderDetail from '../pages/ManageOrderDetail';
 import ManageOrders from '../pages/ManageOrders';
 import ManageProducts from '../pages/ManageProducts';
 import ManageUsers from '../pages/ManageUsers';
 import PageNotFound from '../pages/PageNotFound';
+import { UserInfo } from '../types';
 
 interface Props {}
 
-const AdminRoutes: React.FC<Props> = () => {
+const AdminRoutes: React.FC<Props> = (props) => {
+  const { userInfo } = props as { userInfo: UserInfo };
+
+  if (!isAdmin(userInfo?.role)) return <Redirect to="buy/my-cart" />;
+
   return (
     <Switch>
-      <Route exact path="/admin/manage-products" component={ManageProducts} />
-      <Route exact path="/admin/manage-orders/:id" component={ManageOrderDetail} />
-      <Route exact path="/admin/manage-orders" component={ManageOrders} />
-      <Route exact path="/admin/manage-users" component={ManageUsers} />
-      <Route exact path="*" component={PageNotFound} />
+      <Route path="/admin/manage-products">
+        <ManageProducts />
+      </Route>
+      <Route path="/admin/manage-orders/:id">
+        <ManageOrderDetail />
+      </Route>
+      <Route path="/admin/manage-orders">
+        <ManageOrders />
+      </Route>
+      <Route path="/admin/manage-users">
+        <ManageUsers />
+      </Route>
+      <Route path="*">
+        <PageNotFound />
+      </Route>
     </Switch>
   );
 };
