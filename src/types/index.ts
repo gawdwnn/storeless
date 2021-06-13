@@ -1,4 +1,4 @@
-import { firebase } from '../firebase/config';
+import { firebase } from "../firebase/config";
 
 export type AuthUser = firebase.User;
 
@@ -8,9 +8,9 @@ export type SignupData = {
   password: string;
 };
 
-export type Provider = 'facebook' | 'google'
+export type Provider = "facebook" | "google";
 
-export type Role = 'SUPER_ADMIN' | 'CLIENT' | 'ADMIN';
+export type Role = "SUPER_ADMIN" | "CLIENT" | "ADMIN";
 
 export type Address = {
   index?: number;
@@ -32,3 +32,33 @@ export type UserInfo = {
   stripeCustomerId?: string;
   updatedAt?: firebase.firestore.Timestamp;
 };
+
+export type ProductTab = "All" | ProductCategory;
+
+export type ProductCategory = "Clothing" | "Shoes" | "Watches" | "Accessories";
+
+export type Product = {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  imageRef: string;
+  imageFileName: string;
+  price: number;
+  category: ProductCategory;
+  inventory: number;
+  creator: string;
+  createdAt: firebase.firestore.Timestamp;
+  updatedAt?: firebase.firestore.Timestamp;
+};
+
+// Product type used to upload a document in firestore
+export type UploadProduct = Omit<Product, "id" | "createdAt" | "updatedAt"> & {
+  createdAt?: firebase.firestore.FieldValue;
+  updatedAt?: firebase.firestore.FieldValue;
+};
+
+export type AddProductData = Pick<
+  Product,
+  "title" | "description" | "price" | "imageFileName" | "category" | "inventory"
+>;

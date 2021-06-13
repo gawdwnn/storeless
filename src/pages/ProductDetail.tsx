@@ -1,23 +1,33 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
-import Button from '../components/Button';
-import { Product, products } from '../data/products';
-import PageNotFound from './PageNotFound';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import Button from "../components/Button";
+import Spinner from '../components/Spinner'
+
+import { useProductsContext } from "../state/product-context";
+import { Product } from "../types";
+import PageNotFound from "./PageNotFound";
 
 interface Props {}
 
 const ProductDetail: React.FC<Props> = () => {
-  const { productId } = useParams() as { productId: string };
   const [product, setProduct] = useState<Product | undefined>();
+  const { productsState } = useProductsContext();
+  const { products, loading, error } = productsState;
+
+  const params = useParams() as { productId: string }
 
   useEffect(() => {
-    const prod = products.find((item) => item.id === productId);
+    const prod = products.All.find((item) => item.id === params.productId);
     if (prod) setProduct(prod);
     else setProduct(undefined);
-  }, [productId]);
+  }, [params, products.All]);
 
-  if (!product) return <PageNotFound />;
+  if (loading) return <Spinner color='grey' width={50} height={50} />
+
+  if (!loading && error) return <h2 className='header'>{error}</h2>
+
+  if (!product) return <PageNotFound />
 
   return (
     <div className="page--product-detail">
@@ -41,13 +51,13 @@ const ProductDetail: React.FC<Props> = () => {
         </div>
         <div className="product-detail__sub-section quantity-control">
           <div className="qty-action">
-            <FontAwesomeIcon icon={['fas', 'minus']} size="xs" color="grey" />
+            <FontAwesomeIcon icon={["fas", "minus"]} size="xs" color="grey" />
           </div>
           <div className="qty-action qty-action--qty">
             <p className="paragraph">1</p>
           </div>
           <div className="qty-action">
-            <FontAwesomeIcon icon={['fas', 'plus']} size="xs" color="grey" />
+            <FontAwesomeIcon icon={["fas", "plus"]} size="xs" color="grey" />
           </div>
         </div>
         <Button>Add to cart</Button>

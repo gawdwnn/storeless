@@ -1,7 +1,7 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React from "react";
+import { NavLink } from "react-router-dom";
 
-import { useViewContext } from '../../state/view-context';
+import { useViewContext } from "../../state/view-context";
 
 interface Props {}
 
@@ -12,13 +12,13 @@ const AdminDropdown: React.FC<Props> = () => {
       <div className="sidebar__section">
         <h3
           className="header--center header--orange header--link"
-          onClick={() => setViewMode((prev) => (prev === 'admin' ? 'client' : 'admin'))}
+          onClick={() => setViewMode((prev) => (prev === "admin" ? "client" : "admin"))}
         >
-          {viewMode === 'admin' ? 'Switch to client view' : 'Switch to admin view'}
+          {viewMode === "admin" ? "Switch to client view" : "Switch to admin view"}
         </h3>
       </div>
 
-      {viewMode === 'admin' && (
+      {viewMode === "admin" && (
         <div className="sidebar__section sidebar__section--nav">
           <li className="list">
             <NavLink to="/admin/manage-products" className="list-link">

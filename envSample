@@ -1,0 +1,9 @@
+
+BROWSER=none
+PORT=2020
+REACT_APP_apiKey='************************'
+REACT_APP_authDomain='**********.firebaseapp.com'
+REACT_APP_projectId='*********-14472'
+REACT_APP_storageBucket='**********************'
+REACT_APP_messagingSenderId='***************'
+REACT_APP_appId='**************************'
