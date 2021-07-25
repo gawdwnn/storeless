@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useHistory } from "react-router";
-import ProductItem from "../components/Products/ProductItem";
+import ProductItem from "../components/products/ProductItem";
 import Spinner from "../components/Spinner";
 import { useAuthContext } from "../state/auth-context";
 import { useModalContext } from "../state/modal-context";

@@ -62,3 +62,19 @@ export type AddProductData = Pick<
   Product,
   "title" | "description" | "price" | "imageFileName" | "category" | "inventory"
 >;
+
+export type CartItem = {
+  id: string;
+  product: string; // Change from Product to string
+  quantity: number;
+  user: string;
+  item: Product;
+  createdAt: firebase.firestore.Timestamp;
+  updatedAt?: firebase.firestore.Timestamp;
+};
+
+// CartItem type used to upload a document in firestore
+export type UploadCartItem = Omit<CartItem, "id" | "item" | "createdAt" | "updatedAt"> & {
+  createdAt: firebase.firestore.FieldValue;
+  updatedAt?: firebase.firestore.FieldValue;
+};
