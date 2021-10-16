@@ -24,5 +24,6 @@ module.exports = {
     'quotes': ['warn', 'single'],
     'max-len': ['off'],
     'no-useless-catch': ['off'],
+    'camelcase': 'off',
   },
 };

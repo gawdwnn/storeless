@@ -1,3 +1,5 @@
+import { CreatePaymentMethodCardData, PaymentMethod } from "@stripe/stripe-js";
+
 import { firebase } from "../firebase/config";
 
 export type AuthUser = firebase.User;
@@ -78,3 +80,23 @@ export type UploadCartItem = Omit<CartItem, "id" | "item" | "createdAt" | "updat
   createdAt: firebase.firestore.FieldValue;
   updatedAt?: firebase.firestore.FieldValue;
 };
+
+export type UserCards = { data: PaymentMethod[] };
+
+export type StripeCustomer = {
+  id: string;
+  invoice_settings: { default_payment_method: string };
+};
+
+export type CreatePaymentIntentData = {
+  amount: number;
+  customer?: string;
+  payment_method?: string;
+};
+
+export type CreatePaymentMethod =
+  | string
+  | Pick<
+      CreatePaymentMethodCardData,
+      "card" | "billing_details" | "metadata" | "payment_method"
+    >;

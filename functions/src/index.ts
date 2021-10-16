@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import Stripe from 'stripe';
 
 admin.initializeApp();
 
@@ -7,6 +8,11 @@ const env = functions.config();
 const productsCollection = 'products';
 const productCountsCollection = 'product-counts';
 const productCountsDocument = 'counts';
+
+const stripe = new Stripe(env.stripe.secret_key, {
+  apiVersion: '2020-08-27',
+  typescript: true,
+});
 
 type ProductCategory = 'Clothing' | 'Shoes' | 'Watches' | 'Accessories';
 
@@ -170,3 +176,101 @@ export const onProductDeleted = functions.firestore
 
     // return productsIndex.deleteObject(snapshot.id);
     });
+
+export const createPaymentIntents = functions.https.onCall(async (data, context) => {
+  try {
+    if (!context.auth) throw new Error('Not authenticated.');
+
+    const {amount, customer, payment_method} = data as {
+      amount: number;
+      customer?: string;
+      payment_method?: string;
+    };
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount * 100,
+      currency: 'usd',
+      customer,
+      payment_method,
+    });
+
+    return {clientSecret: paymentIntent.client_secret};
+  } catch (error) {
+    throw error;
+  }
+});
+
+export const createStripeCustomer = functions.https.onCall(async (_, context) => {
+  try {
+    if (!context.auth) throw new Error('Not authenticated.');
+
+    const customer = await stripe.customers.create({
+      email: context.auth.token.email,
+    });
+
+    // Update the user document in the users collection in firestore
+    await admin
+        .firestore()
+        .collection('users')
+        .doc(context.auth.uid)
+        .set({stripeCustomerId: customer.id}, {merge: true});
+
+    return {customerId: customer.id};
+  } catch (error) {
+    throw error;
+  }
+});
+
+export const setDefaultCard = functions.https.onCall((data, context) => {
+  try {
+    if (!context.auth) throw new Error('Not authenticated.');
+
+    const {customerId, payment_method} = data as {
+      customerId: string;
+      payment_method: string;
+    };
+
+    return stripe.customers.update(customerId, {
+      invoice_settings: {default_payment_method: payment_method},
+    });
+  } catch (error) {
+    throw error;
+  }
+});
+
+export const listPaymentMethods = functions.https.onCall(async (data, context) => {
+  try {
+    if (!context.auth) throw new Error('Not authenticated.');
+
+    const {customerId} = data as { customerId: string };
+
+    // 1. Query all payment methods of the given customer
+    const paymentMethods = await stripe.paymentMethods.list({
+      customer: customerId,
+      type: 'card',
+    });
+
+    // 2. Query stripe customer object of the given customer
+    const customer = await stripe.customers.retrieve(customerId);
+
+    return {paymentMethods, customer};
+  } catch (error) {
+    throw error;
+  }
+});
+
+export const detachPaymentMethod = functions.https.onCall(async (data, context) => {
+  try {
+    if (!context.auth) throw new Error('Not authenticated.');
+
+    const {payment_method} = data as { payment_method: string };
+
+    const paymentMethod = await stripe.paymentMethods.detach(payment_method);
+
+    if (!paymentMethod) throw new Error('Sorry, something went wrong.');
+
+    return {paymentMethod};
+  } catch (error) {
+    throw error;
+  }
+});

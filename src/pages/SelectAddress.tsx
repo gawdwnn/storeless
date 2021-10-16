@@ -26,6 +26,7 @@ const SelectAddress: React.FC<Props> = () => {
   if (!cart || (cart && cart.length === 0)) return <Redirect to="/" />;
 
   if (!userInfo) return <Spinner color="grey" height={50} width={50} />;
+
   return (
     <div className="page--select-address">
       <h2 className="header">Select a shipping address</h2>

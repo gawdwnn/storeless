@@ -54,13 +54,12 @@ export const useManageProduct = () => {
     );
   };
 
-  const addNewProduct =
-    (data: AddProductData, creator: string) => (imageUrl: string, imagePath: string) => {
+  const addNewProduct = (data: AddProductData, creator: string) => (imageUrl: string, imagePath: string) => {
       const { title, description, price, imageFileName, category, inventory } = data;
       setLoading(true);
       setAddProductFinished(false);
 
-      // 2. Create a new document in the products collection in firestore, requires product data and the image url
+      // Create a new document in the products collection in firestore, requires product data and the image url
 
       const newProduct: UploadProduct = {
         title,
@@ -98,7 +97,7 @@ export const useManageProduct = () => {
 
       // 2. Update the document in the products collection in firestore, requires an editted product data and the image url (in case the product image changed.)
 
-      const edittedProduct: UploadProduct = {
+      const editedProduct: UploadProduct = {
         title,
         description,
         price: +price,
@@ -113,7 +112,7 @@ export const useManageProduct = () => {
 
       productsRef
         .doc(productId)
-        .set(edittedProduct, { merge: true })
+        .set(editedProduct, { merge: true })
         .then(() => {
           setEditProductFinished(true);
           setLoading(false);
